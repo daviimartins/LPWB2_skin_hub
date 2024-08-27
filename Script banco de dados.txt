@@ -1,0 +1,56 @@
+CREATE DATABASE skin_hub
+
+USE skin_hub
+
+CREATE TABLE usuario
+(
+	usuario_id INT IDENTITY(1,1) PRIMARY KEY,
+	nome VARCHAR(50) NOT NULL,
+	email VARCHAR(100) NOT NULL,
+	senha VARCHAR(100) NOT NULL,
+	saldo DECIMAL(10,2) DEFAULT 0.00,
+);
+
+CREATE TABLE skins
+(
+	skins_id INT IDENTITY(1,1) PRIMARY KEY,
+	nome VARCHAR(100) NOT NULL,
+	raridade VARCHAR(50) CHECK(raridade IN('Consumidor'  ,'Industrial ', 'Militar ', 'Restrito', 'Secreto ', 'Oculto ', 'Contrabandeado')) NOT NULL,
+	valor DECIMAL(10,2) NOT NULL,
+	tipo VARCHAR(50) CHECK(tipo IN('Faca'  ,'Luva ', 'Pistola ', 'submetralhadora', 'Rifle de assalto ', 'Rifle de precisão ', 'Escopeta', 'Metralhadora')) NOT NULL,
+	exterior VARCHAR(50) CHECK(exterior IN('Nova de fabrica'  ,'Pouco usada ', 'Testada em campo ', 'Bem desgastada','Veterana de Guerra')) NOT NULL,
+);
+
+CREATE TABLE carrinho
+(
+	carrinho_id INT IDENTITY(1,1) PRIMARY KEY,
+	usuario_id INT NOT NULL,
+	skins_id INT NOT NULL,
+	quantidade INT NOT NULL,
+
+	FOREIGN KEY(usuario_id) REFERENCES usuario(usuario_id),
+	FOREIGN KEY(skins_id) REFERENCES skins(skins_id),
+);
+
+CREATE TABLE transacao
+(
+	transacao_id INT IDENTITY(1,1) PRIMARY KEY,
+	usuario_id INT NOT NULL,
+	tipo VARCHAR(50) CHECK(tipo IN('Depósito')) NOT NULL,
+	valor DECIMAL(10,2) NOT NULL,
+	forma_pagamento VARCHAR(50) CHECK(forma_pagamento IN('Pix'  ,'Cartão crédito ', 'Cartão debito ', 'Boleto')) NOT NULL,
+	data_transacao DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+	FOREIGN KEY (usuario_id) REFERENCES usuario(usuario_id)
+);
+
+CREATE TABLE historico_compra
+(
+	compra_id INT IDENTITY(1,1) PRIMARY KEY,
+	usuario_id INT NOT NULL,
+	skins_id INT NOT NULL,
+	valor DECIMAL(10,2) NOT NULL,
+	
+	FOREIGN KEY(usuario_id) REFERENCES usuario(usuario_id),
+	FOREIGN KEY(skins_id) REFERENCES skins(skins_id),
+);
